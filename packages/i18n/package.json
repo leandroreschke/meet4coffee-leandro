@@ -1,0 +1,18 @@
+{
+  "name": "@meet4coffee/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./messages/en": "./src/messages/en.json",
+    "./messages/es": "./src/messages/es.json"
+  },
+  "dependencies": {
+    "@meet4coffee/core": "workspace:*"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@meet4coffee/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@meet4coffee/core": "workspace:*",
+    "@meet4coffee/i18n": "workspace:*",
+    "@meet4coffee/supabase": "workspace:*",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.57.2",
+    "next": "16.2.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "stripe": "^18.5.0"
+  }
+}

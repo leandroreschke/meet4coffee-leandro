@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <!-- Wrapper to center the mugs and prevent clipping -->
+  <g transform="translate(10, 15)">
+    <!-- Back Mug: Solid Vanilla Cream, Mirrored, Offset Bottom-Right -->
+    <g transform="translate(44, 40) rotate(-12, 20, 23)">
+      <path d="M 40,16 C 60,14 60,36 40,34" fill="none" stroke="#f0e7d5" stroke-width="10" stroke-linecap="round"/>
+      <rect x="0" y="0" width="40" height="46" rx="6" fill="#f0e7d5" />
+    </g>
+
+    <!-- Front Mug: Outline Mocha, Base -->
+    <g transform="translate(18, 26) rotate(12, 20, 23)">
+      <path d="M 0,16 C -20,14 -20,36 0,34" fill="none" stroke="#4b3935" stroke-width="8" stroke-linecap="round"/>
+      <rect x="0" y="0" width="40" height="46" rx="6" fill="none" stroke="#4b3935" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Clink Splash Lines -->
+    <path d="M 51,18 L 51,6 M 38,22 L 28,14 M 64,22 L 74,14" fill="none" stroke="#4b3935" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>
