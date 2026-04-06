@@ -34,16 +34,16 @@ export async function POST(request: Request) {
     .gte("meetings.start_at", now.toISOString())
     .lte("meetings.start_at", inOneHour);
 
-  const delivered = [];
-
-  for (const participant of participants ?? []) {
-    const result = await sendSlackReminder({
-      workspaceId: participant.workspace_id,
-      memberId: participant.member_id,
-      text: `Reminder: ${participant.meetings?.title ?? "Coffee break"} starts soon.`,
-    });
-    delivered.push({ participantId: participant.id, result });
-  }
+  const delivered = await Promise.all(
+    (participants ?? []).map(async (participant) => {
+      const result = await sendSlackReminder({
+        workspaceId: participant.workspace_id,
+        memberId: participant.member_id,
+        text: `Reminder: ${participant.meetings?.title ?? "Coffee break"} starts soon.`,
+      });
+      return { participantId: participant.id, result };
+    }),
+  );
 
   return Response.json({ ok: true, delivered });
 }
