@@ -3,12 +3,8 @@ import Link from "next/link";
 import { createTranslator } from "@meet4coffee/i18n";
 
 import { AuthCard } from "@/components/auth-card";
+import { SignInForm } from "@/components/sign-in-form";
 import { getPreferredLocale } from "@/lib/auth";
-import {
-  googleAuthAction,
-  magicLinkAction,
-  signInAction,
-} from "@/lib/actions/auth";
 import { localizePath } from "@/lib/locale";
 
 export default async function SignInPage({
@@ -38,54 +34,16 @@ export default async function SignInPage({
           {t("auth.magicLinkSent")}
         </p>
       ) : null}
-      <form action={signInAction} className="space-y-4">
-        <input type="hidden" name="next" value={next} />
-        <label className="block space-y-2">
-          <span className="text-sm font-black uppercase tracking-[0.12em] text-mocha-earth">
-            {t("auth.email")}
-          </span>
-          <input
-            name="email"
-            type="email"
-            required
-            className="w-full px-4 py-3"
-          />
-        </label>
-        <label className="block space-y-2">
-          <span className="text-sm font-black uppercase tracking-[0.12em] text-mocha-earth">
-            {t("auth.password")}
-          </span>
-          <input
-            name="password"
-            type="password"
-            required
-            className="w-full px-4 py-3"
-          />
-        </label>
-        <button
-          type="submit"
-          className="w-full rounded-full border-4 border-mocha-earth bg-mocha-earth px-5 py-3 text-sm font-black uppercase tracking-[0.12em] text-vanilla-cream whitespace-nowrap transition-all hover:translate-x-[4px] hover:translate-y-[4px] hover:bg-banana-split hover:text-mocha-earth hover:shadow-none"
-          style={{ boxShadow: "4px 4px 0px var(--banana-split)" }}
-        >
-          {t("auth.signIn")}
-        </button>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <button
-            formAction={magicLinkAction}
-            className="rounded-full border-4 border-mocha-earth bg-lavender-haze px-5 py-3 text-sm font-black whitespace-nowrap text-mocha-earth transition-all hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none"
-            style={{ boxShadow: "4px 4px 0px var(--mocha-earth)" }}
-          >
-            {t("auth.magicLink")}
-          </button>
-          <button
-            formAction={googleAuthAction}
-            className="rounded-full border-4 border-mocha-earth bg-strawberry-milk px-5 py-3 text-sm font-black whitespace-nowrap text-mocha-earth transition-all hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none"
-            style={{ boxShadow: "4px 4px 0px var(--mocha-earth)" }}
-          >
-            {t("auth.google")}
-          </button>
-        </div>
-      </form>
+      <SignInForm
+        next={next}
+        labels={{
+          email: t("auth.email"),
+          password: t("auth.password"),
+          signIn: t("auth.signIn"),
+          magicLink: t("auth.magicLink"),
+          google: t("auth.google"),
+        }}
+      />
       <p className="mt-4 text-sm font-bold text-mocha-earth/70">
         {t("auth.noAccount")}{" "}
         <Link

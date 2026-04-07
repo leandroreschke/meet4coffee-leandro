@@ -18,7 +18,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className="h-full bg-cream antialiased">
-      <body className="min-h-full bg-cream text-stone-900">{children}</body>
+      <body className="min-h-full bg-white text-stone-900">{children}</body>
     </html>
   );
 }

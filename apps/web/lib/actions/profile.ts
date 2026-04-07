@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { localizePath } from "../locale";
 
 import { createAdminClient, createServerSupabaseClient } from "@meet4coffee/supabase";
 import { normalizeLocale } from "@meet4coffee/i18n";
@@ -140,8 +141,17 @@ export async function saveProfileAction(formData: FormData) {
     }
   }
 
+  const cookieStore = await cookies();
+  cookieStore.set("m4c-locale", language, {
+    path: "/",
+    sameSite: "lax",
+    httpOnly: false,
+    maxAge: 60 * 60 * 24 * 365,
+  });
+
+  const localizedProfilePath = localizePath(profilePath, language);
   revalidatePath(profilePath);
-  redirect(`${profilePath}?profile_status=saved`);
+  redirect(`${localizedProfilePath}?profile_status=saved`);
 }
 
 export async function saveAvailabilityAction(formData: FormData) {
