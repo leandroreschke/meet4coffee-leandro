@@ -1,7 +1,15 @@
 import { createAdminClient } from "@meet4coffee/supabase";
+import type { Database } from "@meet4coffee/supabase";
 
 import { getCronSecret } from "@/lib/env";
 import { sendSlackReminder } from "@/lib/integrations/slack";
+
+type ReminderParticipant = Pick<
+  Database["public"]["Tables"]["meeting_participants"]["Row"],
+  "id" | "workspace_id" | "member_id"
+> & {
+  meetings: Pick<Database["public"]["Tables"]["meetings"]["Row"], "title" | "start_at"> | null;
+};
 
 function isAuthorized(request: Request) {
   const bearer = request.headers.get("authorization")?.replace("Bearer ", "");
@@ -34,8 +42,10 @@ export async function POST(request: Request) {
     .gte("meetings.start_at", now.toISOString())
     .lte("meetings.start_at", inOneHour);
 
+  const reminderParticipants = (participants ?? []) as ReminderParticipant[];
+
   const delivered = await Promise.all(
-    (participants ?? []).map(async (participant) => {
+    reminderParticipants.map(async (participant) => {
       const result = await sendSlackReminder({
         workspaceId: participant.workspace_id,
         memberId: participant.member_id,
