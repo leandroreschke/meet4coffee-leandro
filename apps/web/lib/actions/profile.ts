@@ -95,7 +95,6 @@ export async function saveProfileAction(formData: FormData) {
       job_title: String(formData.get("job_title") ?? "") || null,
       language,
       bio: String(formData.get("bio") ?? "") || null,
-      avatar_url: String(formData.get("avatar_url") ?? "") || null,
       slack_user_id: String(formData.get("slack_user_id") ?? "") || null,
     },
     {
@@ -103,6 +102,7 @@ export async function saveProfileAction(formData: FormData) {
     },
   );
   if (saveProfileResult.error) {
+    console.error("Profile upsert error:", saveProfileResult.error);
     redirect(profileStatusPath(profilePath, "error_profile", saveProfileResult.error.code));
   }
 
@@ -112,6 +112,7 @@ export async function saveProfileAction(formData: FormData) {
     .eq("id", context.membership.id)
     .eq("workspace_id", context.workspace.id);
   if (activateMembershipResult.error) {
+    console.error("Membership activation error:", activateMembershipResult.error);
     redirect(profileStatusPath(profilePath, "error_membership", activateMembershipResult.error.code));
   }
 
@@ -121,6 +122,7 @@ export async function saveProfileAction(formData: FormData) {
     .eq("workspace_id", context.workspace.id)
     .eq("user_id", context.user.id);
   if (clearInterestsResult.error) {
+    console.error("Clear interests error:", clearInterestsResult.error);
     redirect(profileStatusPath(profilePath, "error_interests", clearInterestsResult.error.code));
   }
 
@@ -133,6 +135,7 @@ export async function saveProfileAction(formData: FormData) {
       })),
     );
     if (insertInterestsResult.error) {
+      console.error("Insert interests error:", insertInterestsResult.error);
       redirect(profileStatusPath(profilePath, "error_interests", insertInterestsResult.error.code));
     }
   }
@@ -209,7 +212,6 @@ export async function importProfileAction(formData: FormData) {
         job_title: sourceProfile.job_title,
         language: sourceProfile.language,
         bio: sourceProfile.bio,
-        avatar_url: sourceProfile.avatar_url,
         slack_user_id: sourceProfile.slack_user_id,
       },
       { onConflict: "workspace_id,user_id" },

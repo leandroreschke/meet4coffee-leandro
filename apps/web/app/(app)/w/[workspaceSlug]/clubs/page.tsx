@@ -1,5 +1,6 @@
 import { createTranslator } from "@meet4coffee/i18n";
 
+import { MOCK_CLUBS } from "@/lib/mock-data";
 import { PageShell } from "@/components/page-shell";
 import { StatusPill } from "@/components/status-pill";
 import { appButtonClassName } from "@/components/ui/app-button";
@@ -21,9 +22,13 @@ export default async function ClubsPage({
   const { workspaceSlug } = await params;
   const context = await getWorkspaceContext(workspaceSlug);
   const t = createTranslator(context.locale);
-  const clubs = await getWorkspaceClubs(context.workspace.id, context.membership.id);
+  const clubs = await getWorkspaceClubs(
+    context.workspace.id,
+    context.membership.id,
+  );
   const isOwner = context.membership.role === "owner";
-  const visibleClubs = clubs.filter((club) => {
+  const allClubs = [...MOCK_CLUBS, ...clubs];
+  const visibleClubs = allClubs.filter((club) => {
     if (isOwner) {
       return true;
     }
@@ -42,10 +47,14 @@ export default async function ClubsPage({
           <SurfaceCard key={club.id} className="bg-white">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h2 className="font-display text-3xl font-black text-mocha-earth">{club.name}</h2>
-                <p className="mt-2 text-sm font-semibold leading-6 text-mocha-earth/75">{club.description}</p>
+                <h2 className="font-display text-3xl font-black text-mocha-earth">
+                  {club.name}
+                </h2>
+                <p className="mt-2 text-sm font-semibold leading-6 text-mocha-earth/75">
+                  {club.description}
+                </p>
               </div>
-              <StatusPill>{club.meeting_mode}</StatusPill>
+              {club.is_ready && <StatusPill>Active</StatusPill>}
             </div>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold uppercase tracking-[0.18em] text-mocha-earth/65">
               <span>{club.frequency}</span>
@@ -56,30 +65,60 @@ export default async function ClubsPage({
             <div className="mt-5 flex flex-wrap gap-3">
               {!club.currentMembership &&
                 (club.join_policy === "free_join" || isOwner) && (
-                <form action={joinClubAction}>
-                  <input type="hidden" name="workspace_slug" value={workspaceSlug} />
-                  <input type="hidden" name="club_id" value={club.id} />
-                  <button type="submit" className={appButtonClassName({ variant: "primary", size: "sm" })}>
-                    {t("clubs.join")}
-                  </button>
-                </form>
-              )}
+                  <form action={joinClubAction}>
+                    <input
+                      type="hidden"
+                      name="workspace_slug"
+                      value={workspaceSlug}
+                    />
+                    <input type="hidden" name="club_id" value={club.id} />
+                    <button
+                      type="submit"
+                      className={appButtonClassName({
+                        variant: "primary",
+                        size: "sm",
+                      })}
+                    >
+                      {t("clubs.join")}
+                    </button>
+                  </form>
+                )}
               {!club.currentMembership &&
                 club.join_policy !== "free_join" &&
                 !isOwner && (
-                <form action={requestClubAccessAction}>
-                  <input type="hidden" name="workspace_slug" value={workspaceSlug} />
-                  <input type="hidden" name="club_id" value={club.id} />
-                  <button type="submit" className={appButtonClassName({ variant: "secondary", size: "sm" })}>
-                    {t("clubs.requestAccess")}
-                  </button>
-                </form>
-              )}
+                  <form action={requestClubAccessAction}>
+                    <input
+                      type="hidden"
+                      name="workspace_slug"
+                      value={workspaceSlug}
+                    />
+                    <input type="hidden" name="club_id" value={club.id} />
+                    <button
+                      type="submit"
+                      className={appButtonClassName({
+                        variant: "secondary",
+                        size: "sm",
+                      })}
+                    >
+                      {t("clubs.requestAccess")}
+                    </button>
+                  </form>
+                )}
               {club.currentMembership?.status === "active" && (
                 <form action={leaveClubAction}>
-                  <input type="hidden" name="workspace_slug" value={workspaceSlug} />
+                  <input
+                    type="hidden"
+                    name="workspace_slug"
+                    value={workspaceSlug}
+                  />
                   <input type="hidden" name="club_id" value={club.id} />
-                  <button type="submit" className={appButtonClassName({ variant: "secondary", size: "sm" })}>
+                  <button
+                    type="submit"
+                    className={appButtonClassName({
+                      variant: "secondary",
+                      size: "sm",
+                    })}
+                  >
                     {t("clubs.leave")}
                   </button>
                 </form>

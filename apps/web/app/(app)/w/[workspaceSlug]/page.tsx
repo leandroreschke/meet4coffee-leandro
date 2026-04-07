@@ -1,10 +1,10 @@
 import { createTranslator } from "@meet4coffee/i18n";
 
+import { RouteTransition } from "@/components/route-transition";
 import { WorkspaceMenuGrid } from "@/components/workspace-menu-grid";
 import { getCurrentMemberships, getWorkspaceContext } from "@/lib/auth";
 import { localizePath } from "@/lib/locale";
 import { WorkspaceHeader } from "@/components/workspace-header";
-import { RouteTransition } from "@/components/route-transition";
 import { redirect } from "next/navigation";
 
 export default async function WorkspaceHomePage({

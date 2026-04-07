@@ -24,23 +24,27 @@ export default async function MarketingLayout({
           transitionTypes={["nav-back"]}
           className="flex items-center gap-2 font-display text-2xl font-black tracking-tighter text-mocha-earth"
         >
-          <svg
-            className="h-8 w-8 text-banana-split"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="3"
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
-          </svg>
-          m4c.
+          <img
+            src="/images/logo_no_text.svg"
+            alt="m4c"
+            className="h-auto w-24"
+          />
         </Link>
         <div className="flex items-center gap-4">
+          <Link
+            href={localizePath("/blog", locale)}
+            transitionTypes={["nav-forward"]}
+            className="hidden font-bold text-mocha-earth transition-colors hover:text-strawberry-milk sm:block"
+          >
+            {t("landing.footer.blog")}
+          </Link>
+          <Link
+            href={localizePath("/help", locale)}
+            transitionTypes={["nav-forward"]}
+            className="hidden font-bold text-mocha-earth transition-colors hover:text-banana-split sm:block"
+          >
+            {t("landing.footer.help")}
+          </Link>
           <LanguageSwitcher currentLocale={locale} shortOptions />
           <Link
             href={`${localizePath("/sign-in", locale)}?next=${encodeURIComponent(localizePath("/app", locale))}`}

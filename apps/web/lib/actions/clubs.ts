@@ -7,10 +7,8 @@ import { createServerSupabaseClient } from "@meet4coffee/supabase";
 
 import { getWorkspaceContext } from "../auth";
 
-const VALID_ASSIGNMENT_POLICIES = new Set(["mandatory", "optional"]);
 const VALID_VISIBILITIES = new Set(["public", "hidden"]);
 const VALID_JOIN_POLICIES = new Set(["free_join", "approval_required", "owner_only"]);
-const VALID_MEETING_MODES = new Set(["single_shared", "generated_groups"]);
 const VALID_FREQUENCIES = new Set(["weekly", "biweekly", "monthly"]);
 const VALID_WEEKDAYS = new Set([
   "monday",
@@ -36,25 +34,17 @@ function parsePositiveNumber(value: FormDataEntryValue | null, fallback: number,
 }
 
 function parseClubPayload(formData: FormData) {
-  const assignmentPolicy = String(formData.get("assignment_policy") ?? "optional");
   const visibility = String(formData.get("visibility") ?? "public");
   const joinPolicy = String(formData.get("join_policy") ?? "free_join");
-  const meetingMode = String(formData.get("meeting_mode") ?? "generated_groups");
   const frequency = String(formData.get("frequency") ?? "weekly");
   const anchorWeekdayRaw = normalizeOptionalText(formData.get("anchor_weekday"));
   const anchorWeekday = anchorWeekdayRaw?.toLowerCase() ?? null;
 
-  if (!VALID_ASSIGNMENT_POLICIES.has(assignmentPolicy)) {
-    throw new Error("invalid_assignment_policy");
-  }
   if (!VALID_VISIBILITIES.has(visibility)) {
     throw new Error("invalid_visibility");
   }
   if (!VALID_JOIN_POLICIES.has(joinPolicy)) {
     throw new Error("invalid_join_policy");
-  }
-  if (!VALID_MEETING_MODES.has(meetingMode)) {
-    throw new Error("invalid_meeting_mode");
   }
   if (!VALID_FREQUENCIES.has(frequency)) {
     throw new Error("invalid_frequency");
@@ -71,10 +61,8 @@ function parseClubPayload(formData: FormData) {
   return {
     name,
     description: normalizeOptionalText(formData.get("description")),
-    assignment_policy: assignmentPolicy,
     visibility,
     join_policy: joinPolicy,
-    meeting_mode: meetingMode,
     meeting_link_provider: "google_meet" as const,
     frequency,
     group_size_target: parsePositiveNumber(formData.get("group_size_target"), 2, 2),
@@ -238,6 +226,34 @@ export async function requestClubAccessAction(formData: FormData) {
   );
 
   revalidatePath(`/w/${workspaceSlug}/clubs`);
+}
+
+export async function toggleClubReadyAction(formData: FormData) {
+  const workspaceSlug = String(formData.get("workspace_slug"));
+  const clubId = String(formData.get("club_id"));
+  const isReady = formData.get("is_ready") === "true";
+  const context = await getWorkspaceContext(workspaceSlug);
+
+  if (context.membership.role !== "owner") {
+    redirect(`/w/${workspaceSlug}`);
+  }
+
+  if (!clubId) {
+    redirect(`/w/${workspaceSlug}/config?clubs_status=toggle_invalid`);
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase
+    .from("clubs")
+    .update({ is_ready: isReady })
+    .eq("workspace_id", context.workspace.id)
+    .eq("id", clubId);
+
+  if (error) {
+    redirect(`/w/${workspaceSlug}/config?clubs_status=toggle_error`);
+  }
+
+  revalidatePath(`/w/${workspaceSlug}/config`);
 }
 
 export async function leaveClubAction(formData: FormData) {

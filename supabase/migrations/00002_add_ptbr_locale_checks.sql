@@ -57,3 +57,35 @@ $$;
 alter table public.member_profiles
   add constraint member_profiles_language_check
   check (language in ('en', 'es', 'pt-br'));
+
+-- Fix: Allow members to update their own status (e.g., from pending_onboarding to active)
+create or replace function public.can_self_update_workspace_member(
+  member_row_id uuid,
+  next_workspace_id uuid,
+  next_user_id uuid,
+  next_role text,
+  next_invited_email text,
+  next_seat_consuming boolean,
+  next_status text
+)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.workspace_members as existing
+    where existing.id = member_row_id
+      and existing.workspace_id = next_workspace_id
+      and existing.user_id = next_user_id
+      and existing.role = next_role
+      and existing.invited_email is not distinct from next_invited_email
+      and existing.seat_consuming = next_seat_consuming
+      -- Allow status change from invited/pending_onboarding to active
+      and (
+        existing.status = next_status
+        or (existing.status in ('invited', 'pending_onboarding') and next_status = 'active')
+      )
+  );
+$$;

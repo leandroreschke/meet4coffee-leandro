@@ -7,6 +7,7 @@ import type {
   ClubRecord,
   ClubWithCurrentMembership,
   MeetingWithParticipant,
+  OptOutTarget,
   ProfileData,
   WorkspaceConfigData,
   WorkspaceMemberWithProfile,
@@ -75,10 +76,10 @@ export async function getWorkspaceMembers(workspaceId: string) {
   const userIds = typedMembers.map((member) => member.user_id);
   const { data: profiles } = userIds.length
     ? await supabase
-        .from("member_profiles")
-        .select("id, workspace_id, user_id, name, location, job_title, language, bio, slack_user_id")
-        .eq("workspace_id", workspaceId)
-        .in("user_id", userIds)
+      .from("member_profiles")
+      .select("id, workspace_id, user_id, name, location, job_title, language, bio, slack_user_id")
+      .eq("workspace_id", workspaceId)
+      .in("user_id", userIds)
     : { data: [] as Array<Record<string, unknown>> };
 
   const profileMap = new Map(
@@ -186,6 +187,85 @@ export async function getProfileData(workspaceId: string, userId: string): Promi
     selectedInterestIds: memberInterests.map((entry) => entry.interest_id),
     availability: availability ?? [],
   };
+}
+
+export async function getOptOuts(
+  workspaceId: string,
+  sourceMemberId: string,
+): Promise<OptOutTarget[]> {
+  const supabase = await createServerSupabaseClient();
+
+  const { data: optOuts } = await supabase
+    .from("member_opt_outs")
+    .select("target_member_id")
+    .eq("workspace_id", workspaceId)
+    .eq("source_member_id", sourceMemberId);
+
+  const targetIds = (optOuts ?? []).map((o: { target_member_id: string }) => o.target_member_id);
+  if (targetIds.length === 0) return [];
+
+  const { data: members } = await supabase
+    .from("workspace_members")
+    .select("id, user_id")
+    .eq("workspace_id", workspaceId)
+    .in("id", targetIds);
+
+  const typedMembers = (members ?? []) as Array<{ id: string; user_id: string }>;
+  const userIds = typedMembers.map((m) => m.user_id);
+
+  const { data: profiles } = userIds.length
+    ? await supabase
+      .from("member_profiles")
+      .select("user_id, name, email")
+      .eq("workspace_id", workspaceId)
+      .in("user_id", userIds)
+    : { data: [] as Array<{ user_id: string; name: string | null; email: string | null }> };
+
+  const profileMap = new Map<string, { name: string | null; email: string | null }>(
+    (profiles ?? []).map((p: { user_id: string; name: string | null; email: string | null }) => [p.user_id, { name: p.name, email: p.email }]),
+  );
+
+  return typedMembers.map((m) => ({
+    memberId: m.id,
+    userId: m.user_id,
+    name: profileMap.get(m.user_id)?.name ?? null,
+    email: profileMap.get(m.user_id)?.email ?? null,
+  }));
+}
+
+export async function getWorkspaceMembersSearchable(
+  workspaceId: string,
+  excludeMemberId: string,
+): Promise<OptOutTarget[]> {
+  const supabase = await createServerSupabaseClient();
+
+  const { data: members } = await supabase
+    .from("workspace_members")
+    .select("id, user_id")
+    .eq("workspace_id", workspaceId)
+    .eq("status", "active")
+    .neq("id", excludeMemberId);
+
+  const userIds = (members ?? []).map((m: { id: string; user_id: string }) => m.user_id);
+
+  const { data: profiles } = userIds.length
+    ? await supabase
+      .from("member_profiles")
+      .select("user_id, name, email")
+      .eq("workspace_id", workspaceId)
+      .in("user_id", userIds)
+    : { data: [] as Array<{ user_id: string; name: string | null; email: string | null }> };
+
+  const profileMap = new Map<string, { name: string | null; email: string | null }>(
+    (profiles ?? []).map((p: { user_id: string; name: string | null; email: string | null }) => [p.user_id, { name: p.name, email: p.email }]),
+  );
+
+  return ((members ?? []) as Array<{ id: string; user_id: string }>).map((m) => ({
+    memberId: m.id,
+    userId: m.user_id,
+    name: profileMap.get(m.user_id)?.name ?? null,
+    email: profileMap.get(m.user_id)?.email ?? null,
+  }));
 }
 
 export async function getWorkspaceConfigData(workspaceId: string): Promise<WorkspaceConfigData> {

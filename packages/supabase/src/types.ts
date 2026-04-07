@@ -14,17 +14,6 @@ type Timestamps = {
 export type Database = {
   public: {
     Tables: {
-      profiles: {
-        Row: Timestamps & {
-          id: string;
-          email: string | null;
-          full_name: string | null;
-          avatar_url: string | null;
-          preferred_locale: string | null;
-        };
-        Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & { id: string };
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
-      };
       workspaces: {
         Row: Timestamps & {
           id: string;
@@ -37,7 +26,7 @@ export type Database = {
           owner_member_id: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["workspaces"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["workspaces"]["Row"]>;
       };
       workspace_members: {
@@ -52,7 +41,7 @@ export type Database = {
           joined_at: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["workspace_members"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["workspace_members"]["Row"]>;
       };
       member_profiles: {
@@ -60,6 +49,8 @@ export type Database = {
           id: string;
           workspace_id: string;
           user_id: string;
+          email: string | null;
+          preferred_locale: string;
           name: string | null;
           location: string | null;
           job_title: string | null;
@@ -69,7 +60,7 @@ export type Database = {
           avatar_url: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["member_profiles"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["member_profiles"]["Row"]>;
       };
       member_availability_windows: {
@@ -85,7 +76,7 @@ export type Database = {
           Database["public"]["Tables"]["member_availability_windows"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["member_availability_windows"]["Row"]>;
       };
       interests: {
@@ -96,7 +87,7 @@ export type Database = {
           created_by_user_id: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["interests"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["interests"]["Row"]>;
       };
       member_interests: {
@@ -107,7 +98,7 @@ export type Database = {
           interest_id: string;
         };
         Insert: Omit<Database["public"]["Tables"]["member_interests"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["member_interests"]["Row"]>;
       };
       interest_suggestions: {
@@ -122,7 +113,7 @@ export type Database = {
           Database["public"]["Tables"]["interest_suggestions"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["interest_suggestions"]["Row"]>;
       };
       groups: {
@@ -133,7 +124,7 @@ export type Database = {
           description: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["groups"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["groups"]["Row"]>;
       };
       group_memberships: {
@@ -144,7 +135,7 @@ export type Database = {
           member_id: string;
         };
         Insert: Omit<Database["public"]["Tables"]["group_memberships"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["group_memberships"]["Row"]>;
       };
       clubs: {
@@ -153,21 +144,20 @@ export type Database = {
           workspace_id: string;
           name: string;
           description: string | null;
-          assignment_policy: string;
           visibility: string;
           join_policy: string;
-          meeting_mode: string;
           meeting_link_provider: string;
           frequency: string;
           group_size_target: number;
           duration_minutes: number;
           reminder_minutes_before: number;
           calendar_event_enabled: boolean;
+          is_ready: boolean;
           anchor_weekday: string | null;
           anchor_time: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["clubs"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["clubs"]["Row"]>;
       };
       club_group_assignments: {
@@ -181,7 +171,7 @@ export type Database = {
           Database["public"]["Tables"]["club_group_assignments"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["club_group_assignments"]["Row"]>;
       };
       club_memberships: {
@@ -193,7 +183,7 @@ export type Database = {
           status: string;
         };
         Insert: Omit<Database["public"]["Tables"]["club_memberships"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["club_memberships"]["Row"]>;
       };
       workspace_invites: {
@@ -209,7 +199,7 @@ export type Database = {
           revoked_at: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["workspace_invites"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["workspace_invites"]["Row"]>;
       };
       meeting_rounds: {
@@ -222,7 +212,7 @@ export type Database = {
           scheduled_for: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["meeting_rounds"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["meeting_rounds"]["Row"]>;
       };
       meetings: {
@@ -239,7 +229,7 @@ export type Database = {
           meeting_link_url: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["meetings"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["meetings"]["Row"]>;
       };
       meeting_participants: {
@@ -255,7 +245,7 @@ export type Database = {
           Database["public"]["Tables"]["meeting_participants"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["meeting_participants"]["Row"]>;
       };
       meeting_reschedule_proposals: {
@@ -272,7 +262,7 @@ export type Database = {
           Database["public"]["Tables"]["meeting_reschedule_proposals"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["meeting_reschedule_proposals"]["Row"]>;
       };
       meeting_reschedule_responses: {
@@ -287,7 +277,7 @@ export type Database = {
           Database["public"]["Tables"]["meeting_reschedule_responses"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["meeting_reschedule_responses"]["Row"]>;
       };
       member_opt_outs: {
@@ -298,7 +288,7 @@ export type Database = {
           target_member_id: string;
         };
         Insert: Omit<Database["public"]["Tables"]["member_opt_outs"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["member_opt_outs"]["Row"]>;
       };
       round_exclusions: {
@@ -310,7 +300,7 @@ export type Database = {
           reason: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["round_exclusions"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["round_exclusions"]["Row"]>;
       };
       workspace_subscriptions: {
@@ -328,7 +318,7 @@ export type Database = {
           Database["public"]["Tables"]["workspace_subscriptions"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["workspace_subscriptions"]["Row"]>;
       };
       stripe_events: {
@@ -339,7 +329,7 @@ export type Database = {
           payload: Json;
         };
         Insert: Omit<Database["public"]["Tables"]["stripe_events"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["stripe_events"]["Row"]>;
       };
       workspace_integrations: {
@@ -357,7 +347,7 @@ export type Database = {
           Database["public"]["Tables"]["workspace_integrations"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["workspace_integrations"]["Row"]>;
       };
       meeting_external_links: {
@@ -374,7 +364,7 @@ export type Database = {
           Database["public"]["Tables"]["meeting_external_links"]["Row"],
           keyof Timestamps
         > &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["meeting_external_links"]["Row"]>;
       };
       audit_logs: {
@@ -388,8 +378,23 @@ export type Database = {
           metadata: Json;
         };
         Insert: Omit<Database["public"]["Tables"]["audit_logs"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["audit_logs"]["Row"]>;
+      };
+      cron_run_logs: {
+        Row: {
+          id: string;
+          job_name: string;
+          workspace_id: string | null;
+          club_id: string | null;
+          status: string;
+          error_message: string | null;
+          rounds_generated: number;
+          created_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["cron_run_logs"]["Row"], "id" | "created_at"> &
+        Partial<Pick<Database["public"]["Tables"]["cron_run_logs"]["Row"], "id" | "created_at">>;
+        Update: Partial<Database["public"]["Tables"]["cron_run_logs"]["Row"]>;
       };
       content_authors: {
         Row: Timestamps & {
@@ -399,7 +404,7 @@ export type Database = {
           avatar_path: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["content_authors"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["content_authors"]["Row"]>;
       };
       content_items: {
@@ -421,7 +426,7 @@ export type Database = {
           archived_at: string | null;
         };
         Insert: Omit<Database["public"]["Tables"]["content_items"]["Row"], keyof Timestamps> &
-          Partial<Timestamps>;
+        Partial<Timestamps>;
         Update: Partial<Database["public"]["Tables"]["content_items"]["Row"]>;
       };
     };

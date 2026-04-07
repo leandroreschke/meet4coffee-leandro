@@ -87,6 +87,15 @@ export type WorkspaceConfigData = {
   members: WorkspaceMemberWithProfile[];
 };
 
+export type OptOutRecord = Database["public"]["Tables"]["member_opt_outs"]["Row"];
+
+export type OptOutTarget = {
+  memberId: string;
+  userId: string;
+  name: string | null;
+  email: string | null;
+};
+
 export type ContentSection = "blog" | "help";
 
 export type ContentAuthorRecord = Database["public"]["Tables"]["content_authors"]["Row"];

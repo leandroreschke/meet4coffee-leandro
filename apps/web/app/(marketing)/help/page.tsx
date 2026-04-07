@@ -4,6 +4,7 @@ import { createTranslator } from "@meet4coffee/i18n";
 import { getPreferredLocale } from "@/lib/auth";
 import { localizePath } from "@/lib/locale";
 import { listPublishedContent } from "@/lib/services/content";
+import { getShadowColor } from "@/lib/utils";
 
 function normalize(value: string) {
   return value.trim().toLowerCase();
@@ -21,7 +22,9 @@ export default async function HelpCenterPage({
   const tag = typeof params?.tag === "string" ? normalize(params.tag) : "";
 
   const items = await listPublishedContent("help");
-  const tags = Array.from(new Set(items.flatMap((item) => item.tags))).sort((a, b) => a.localeCompare(b));
+  const tags = Array.from(new Set(items.flatMap((item) => item.tags))).sort(
+    (a, b) => a.localeCompare(b),
+  );
 
   const filteredItems = items.filter((item) => {
     const matchesQuery =
@@ -30,7 +33,9 @@ export default async function HelpCenterPage({
       normalize(item.excerpt ?? "").includes(query) ||
       item.tags.some((itemTag) => normalize(itemTag).includes(query));
 
-    const matchesTag = tag.length === 0 || item.tags.some((itemTag) => normalize(itemTag) === tag);
+    const matchesTag =
+      tag.length === 0 ||
+      item.tags.some((itemTag) => normalize(itemTag) === tag);
 
     return matchesQuery && matchesTag;
   });
@@ -38,8 +43,12 @@ export default async function HelpCenterPage({
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-6 py-12 md:px-8">
       <section className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-mocha-earth/70">{t("landing.footer.help")}</p>
-        <h1 className="font-display text-5xl text-stone-900">{t("help.title")}</h1>
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-mocha-earth/70">
+          {t("landing.footer.help")}
+        </p>
+        <h1 className="font-display text-5xl text-stone-900">
+          {t("help.title")}
+        </h1>
         <p className="max-w-2xl text-base leading-7 text-stone-700">
           {t("help.description")}
         </p>
@@ -59,7 +68,11 @@ export default async function HelpCenterPage({
           </label>
           <label className="block w-full">
             <span className="sr-only">Filter by tag</span>
-            <select name="tag" defaultValue={tag} className="w-full rounded-2xl border border-mocha-earth/15 bg-white px-4 py-3">
+            <select
+              name="tag"
+              defaultValue={tag}
+              className="w-full rounded-2xl border border-mocha-earth/15 bg-white px-4 py-3"
+            >
               <option value="">{t("help.filterAllTags")}</option>
               {tags.map((itemTag) => (
                 <option key={itemTag} value={itemTag}>
@@ -77,15 +90,19 @@ export default async function HelpCenterPage({
         </form>
       </section>
 
-      <section className="mt-8 space-y-4">
+      <section className="mt-8 grid gap-6 md:grid-cols-2">
         {filteredItems.length === 0 ? (
-          <div className="surface-card rounded-[1.8rem] p-6 text-sm text-stone-700">
+          <div className="col-span-full rounded-[1.8rem] border-4 border-mocha-earth bg-white p-6 text-sm text-mocha-earth">
             {t("help.noMatches")}
           </div>
         ) : (
           filteredItems.map((item) => (
-            <article key={item.id} className="surface-card rounded-[1.8rem] p-6">
-              <h2 className="font-display text-3xl text-stone-900">
+            <article
+              key={item.id}
+              className="flex flex-col rounded-[1.8rem] border-4 border-mocha-earth bg-white p-6 transition-transform hover:-translate-y-1"
+              style={{ boxShadow: `6px 6px 0px ${getShadowColor(item.id)}` }}
+            >
+              <h2 className="font-display text-3xl text-mocha-earth">
                 <Link
                   href={localizePath(`/help/${item.slug}`, locale)}
                   transitionTypes={["nav-forward"]}
@@ -94,13 +111,17 @@ export default async function HelpCenterPage({
                   {item.title}
                 </Link>
               </h2>
-              {item.excerpt ? <p className="mt-3 text-base leading-7 text-stone-700">{item.excerpt}</p> : null}
+              {item.excerpt ? (
+                <p className="mt-3 grow text-base leading-7 text-mocha-earth/80">
+                  {item.excerpt}
+                </p>
+              ) : null}
               {item.tags.length > 0 ? (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {item.tags.map((itemTag) => (
                     <span
                       key={`${item.id}-${itemTag}`}
-                      className="rounded-full border border-mocha-earth/15 bg-white px-3 py-1 text-xs uppercase tracking-[0.14em] text-stone-700"
+                      className="rounded-full border-2 border-mocha-earth bg-vanilla-cream px-3 py-1 text-xs uppercase tracking-[0.14em] text-mocha-earth"
                     >
                       {itemTag}
                     </span>

@@ -17,9 +17,6 @@ export type MembershipState = (typeof MEMBERSHIP_STATES)[number];
 export const SUBSCRIPTION_TIERS = ["free", "premium", "ultimate"] as const;
 export type SubscriptionTier = (typeof SUBSCRIPTION_TIERS)[number];
 
-export const ASSIGNMENT_POLICIES = ["mandatory", "optional"] as const;
-export type AssignmentPolicy = (typeof ASSIGNMENT_POLICIES)[number];
-
 export const CLUB_VISIBILITIES = ["public", "hidden"] as const;
 export type ClubVisibility = (typeof CLUB_VISIBILITIES)[number];
 
@@ -30,7 +27,7 @@ export const CLUB_JOIN_POLICIES = [
 ] as const;
 export type ClubJoinPolicy = (typeof CLUB_JOIN_POLICIES)[number];
 
-export const MEETING_MODES = ["single_shared", "generated_groups"] as const;
+export const MEETING_MODES = ["generated_groups"] as const;
 export type MeetingMode = (typeof MEETING_MODES)[number];
 
 export const MEETING_LINK_PROVIDERS = ["google_meet"] as const;
@@ -103,16 +100,15 @@ export interface ClubSummary {
   id: string;
   name: string;
   description: string | null;
-  assignmentPolicy: AssignmentPolicy;
   visibility: ClubVisibility;
   joinPolicy: ClubJoinPolicy;
-  meetingMode: MeetingMode;
   meetingLinkProvider: MeetingLinkProvider;
   frequency: RoundFrequency;
   groupSizeTarget: number;
   durationMinutes: number;
   calendarEventEnabled: boolean;
   reminderMinutesBefore: number;
+  isReady: boolean;
   anchorWeekday?: Weekday | null;
   anchorTime?: string | null;
 }

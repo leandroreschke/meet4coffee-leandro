@@ -553,7 +553,8 @@ for update using (
         user_id,
         role,
         invited_email,
-        seat_consuming
+        seat_consuming,
+        status
       )
     )
   )

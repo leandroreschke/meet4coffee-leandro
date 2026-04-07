@@ -6,7 +6,7 @@ export function RouteTransition({ children }: { children: React.ReactNode }) {
       enter={{
         "nav-forward": "page-from-bottom",
         "nav-back": "page-from-top",
-        default: "none",
+        default: "slide-up",
       }}
       exit={{
         "nav-forward": "page-to-top",
