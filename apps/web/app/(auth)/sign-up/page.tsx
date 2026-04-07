@@ -24,57 +24,65 @@ export default async function SignUpPage({
   return (
     <AuthCard title={t("auth.title")} subtitle={t("auth.subtitle")}>
       {error ? (
-        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-2xl border-2 border-red-400 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
           {error}
         </p>
       ) : null}
       <form action={signUpAction} className="space-y-4">
         <input type="hidden" name="next" value={next} />
         <label className="block space-y-2">
-          <span className="text-sm font-medium text-stone-700">{t("auth.email")}</span>
+          <span className="text-sm font-black uppercase tracking-[0.12em] text-mocha-earth">
+            {t("auth.email")}
+          </span>
           <input
             name="email"
             type="email"
             required
-            className="w-full rounded-2xl border border-stone-900/10 bg-stone-50 px-4 py-3 outline-none"
+            className="w-full px-4 py-3"
           />
         </label>
         <label className="block space-y-2">
-          <span className="text-sm font-medium text-stone-700">{t("auth.password")}</span>
+          <span className="text-sm font-black uppercase tracking-[0.12em] text-mocha-earth">
+            {t("auth.password")}
+          </span>
           <input
             name="password"
             type="password"
             required
-            className="w-full rounded-2xl border border-stone-900/10 bg-stone-50 px-4 py-3 outline-none"
+            className="w-full px-4 py-3"
           />
         </label>
         <label className="block space-y-2">
-          <span className="text-sm font-medium text-stone-700">{t("auth.confirmPassword")}</span>
+          <span className="text-sm font-black uppercase tracking-[0.12em] text-mocha-earth">
+            {t("auth.confirmPassword")}
+          </span>
           <input
             name="confirm_password"
             type="password"
             required
-            className="w-full rounded-2xl border border-stone-900/10 bg-stone-50 px-4 py-3 outline-none"
+            className="w-full px-4 py-3"
           />
         </label>
         <button
           type="submit"
-          className="w-full rounded-full bg-stone-900 px-5 py-3 font-medium text-stone-50"
+          className="w-full rounded-full border-4 border-mocha-earth bg-mocha-earth px-5 py-3 text-sm font-black uppercase tracking-[0.12em] text-vanilla-cream whitespace-nowrap transition-all hover:translate-x-[4px] hover:translate-y-[4px] hover:bg-banana-split hover:text-mocha-earth hover:shadow-none"
+          style={{ boxShadow: "4px 4px 0px var(--banana-split)" }}
         >
           {t("auth.signUp")}
         </button>
         <button
           formAction={googleAuthAction}
-          className="w-full rounded-full border border-stone-900/10 bg-amber-100 px-5 py-3 font-medium text-stone-800"
+          className="w-full rounded-full border-4 border-mocha-earth bg-strawberry-milk px-5 py-3 text-sm font-black whitespace-nowrap text-mocha-earth transition-all hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none"
+          style={{ boxShadow: "4px 4px 0px var(--mocha-earth)" }}
         >
           {t("auth.google")}
         </button>
       </form>
-      <p className="text-sm text-stone-600">
+      <p className="mt-4 text-sm font-bold text-mocha-earth/70">
         {t("auth.haveAccount")}{" "}
         <Link
           href={`${localizePath("/sign-in", locale)}?next=${encodeURIComponent(next)}`}
-          className="font-medium text-stone-900 underline"
+          className="font-black text-mocha-earth underline decoration-2 underline-offset-2"
         >
           {t("auth.signIn")}
         </Link>
